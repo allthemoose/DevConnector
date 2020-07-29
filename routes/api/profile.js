@@ -17,6 +17,7 @@ router.get('/me', auth, async (req, res) => {
     if (!profile) {
       return res.status(400).json({ msg: 'There is no Profile for this User' });
     }
+    return res.json(profile);
   } catch (err) {
     console.error(err.message);
     res.status(500).send({ msg: 'Server error' });
@@ -103,5 +104,62 @@ router.post(
     }
   }
 );
+
+//@route    get api/profile
+//@desc     return all profiles or one based on userId
+//@access   public
+
+router.get('/', async (req, res) => {
+  try {
+    const profiles = await Profile.find().populate('user', ['name', 'avatar']);
+    return res.json(profiles);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send({ msg: 'Server Error' });
+  }
+});
+
+//@route    get api/profile/user/:user_id
+//@desc     return all profiles or one based on userId
+//@access   public
+
+router.get('/user/:user_id', async (req, res) => {
+  try {
+    const profile = await Profile.findOne({
+      user: req.params.user_id,
+    }).populate('user', ['name', 'avatar']);
+    if (!profile) {
+      return res.status(400).json({ msg: 'Profile Not Found' });
+    }
+    return res.json(profile);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind == 'ObjectId') {
+      return res.status(400).json({ msg: 'Profile Not Found' });
+    }
+    res.status(500).send({ msg: 'Server Error' });
+  }
+});
+
+//@route    DELETE api/profile/user/:user_id
+//@desc     remove a profiles User and Post
+//@access   private
+
+router.delete('/', auth, async (req, res) => {
+  try {
+    //@todo remove users posts also
+    //remove profile
+    await Profile.findOneAndRemove({ user: req.user.id });
+    //Remove User
+    await User.findOneAndRemove({ _id: req.user.id });
+    res.json({ msg: 'User Removed' });
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind == 'ObjectId') {
+      return res.status(400).json({ msg: 'Profile Not Found' });
+    }
+    res.status(500).send({ msg: 'Server Error' });
+  }
+});
 
 module.exports = router;
