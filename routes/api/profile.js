@@ -4,6 +4,8 @@ const auth = require('../../middleware/auth');
 const Profile = require('../../models/Profile');
 const user = require('../../models/User');
 const { check, validationResult } = require('express-validator');
+const { findOne } = require('../../models/User');
+const { route } = require('./users');
 
 //@route    GET api/profile/me
 //@desc     return my profile
@@ -159,6 +161,157 @@ router.delete('/', auth, async (req, res) => {
       return res.status(400).json({ msg: 'Profile Not Found' });
     }
     res.status(500).send({ msg: 'Server Error' });
+  }
+});
+
+//@route    PUT api/profile/experience
+//@desc     Add profile experience
+//@access   private
+//@todo could add functionality to update experiences as an excercise.
+router.put(
+  '/experience',
+  [
+    auth,
+    [
+      check('title', 'Title is Required').not().isEmpty(),
+      check('company', 'Company is Required').not().isEmpty(),
+      check('from', 'From Date is Required').not().isEmpty(),
+    ],
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        res.status(400).json({ errors: errors.array() });
+      }
+
+      const {
+        title,
+        company,
+        location,
+        from,
+        to,
+        current,
+        description,
+      } = req.body;
+
+      const experienceFeilds = {};
+      experienceFeilds.title = title;
+      experienceFeilds.company = company;
+      if (location) experienceFeilds.location = location;
+      experienceFeilds.from = from;
+      if (to) experienceFeilds.to = to;
+      if (current) experienceFeilds.current = current;
+      if (description) experienceFeilds.description = description;
+
+      const profile = await Profile.findOne({ user: req.user.id });
+      profile.experience.unshift(experienceFeilds);
+      await profile.save();
+      return res.json(profile);
+    } catch (error) {
+      console.log(error.message);
+      res.sendStatus(400).json({ msg: 'Server Error' });
+    }
+  }
+);
+
+//@route    DELETE api/profile/experience/:exp_id
+//@desc     REMOVE profile experience
+//@access   private
+
+router.delete('/experience/:exp_id', auth, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ user: req.user.id });
+
+    const removeIndex = profile.experience
+      .map((item) => item.id)
+      .indexOf(req.params.exp_id);
+    if (removeIndex < 0) {
+      return res.status(400).json({ msg: 'Server Error' });
+    }
+    profile.experience.splice(removeIndex, 1);
+    await profile.save();
+    res.json(profile);
+  } catch (error) {
+    console.log(error.message);
+    res.status(400).json({ msg: 'Server Error' });
+  }
+});
+
+//@route    PUT api/profile/education
+//@desc     Add profile education
+//@access   private
+//@todo could add functionality to update education as an excercise.
+
+router.put(
+  '/education',
+  [
+    auth,
+    [
+      check('school', 'School is Required').not().isEmpty(),
+      check('degree', 'degree is Required').not().isEmpty(),
+      check('fieldofstudy', 'Field of Study is Required').not().isEmpty(),
+      check('from', 'From Date is Required').not().isEmpty(),
+    ],
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        res.status(400).json({ errors: errors.array() });
+      }
+
+      const {
+        school,
+        degree,
+        fieldofstudy,
+        from,
+        to,
+        current,
+        description,
+      } = req.body;
+
+      const newEdu = {
+        school,
+        degree,
+        fieldofstudy,
+        from,
+        to,
+        current,
+        description,
+      };
+
+      const profile = await Profile.findOne({ user: req.user.id });
+      profile.education.unshift(newEdu);
+      await profile.save();
+      return res.json(profile);
+    } catch (error) {
+      console.log(error.message);
+      res.sendStatus(400).json({ msg: 'Server Error' });
+    }
+  }
+);
+
+//@route    DELETE api/profile/education/:edu_id
+//@desc     REMOVE profile education
+//@access   private
+
+router.delete('/education/:edu_id', auth, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ user: req.user.id });
+
+    const removeIndex = profile.education
+      .map((item) => item.id)
+      .indexOf(req.params.edu_id);
+    if (removeIndex < 0) {
+      return res.status(400).json({ msg: 'Server Error' });
+    }
+    profile.education.splice(removeIndex, 1);
+    await profile.save();
+    res.json(profile);
+  } catch (error) {
+    console.log(error.message);
+    res.status(400).json({ msg: 'Server Error' });
   }
 });
 
