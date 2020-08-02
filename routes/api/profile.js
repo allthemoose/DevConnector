@@ -321,24 +321,24 @@ router.delete('/education/:edu_id', auth, async (req, res) => {
 //@desc     Retreive User Repositories
 //@access   public
 
-router.get('/github/:username', async (req, res) => {
+router.get('/github/:username', (req, res) => {
   try {
     const options = {
-      uri: `http://api.github.com/users/${
+      uri: `https://api.github.com/users/${
         req.params.username
-      }/repos?perpage=5&sort=created:asc&client_id=${config.get(
+      }/repos?per_page=5&sort=created:asc&client_id=${config.get(
         'githubClientId'
       )}&client_secret=${config.get('githubSecret')}`,
       method: 'GET',
-      header: { 'user-agent': 'node.js' },
+      headers: { 'User-Agent': 'allthemoose' },
     };
     console.log(options.uri);
     request(options, (error, response, body) => {
       if (error) console.error(error);
-      if (response.statusCode !== 200) {
-        return res.status(404).json({ msg: 'no Github profile found' });
+      if (response.statusCode == 200) {
+        return res.json(JSON.parse(body));
       }
-      res.json(JSON.parse(body));
+      return res.status(404).json({ msg: 'no Github profile found' });
     });
   } catch (error) {
     console.log(error.message);
