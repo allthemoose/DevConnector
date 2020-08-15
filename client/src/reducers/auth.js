@@ -41,7 +41,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         ...payload,
-        isAthenticated: true,
+        isAuthenticated: true,
         loading: false,
       };
     case REGISTER_FAIL:
