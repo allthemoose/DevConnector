@@ -30,7 +30,7 @@ export default function (state = initialState, action) {
         ...state,
         profile: null,
         loading: false,
-        errors: payload,
+        error: payload,
       };
     }
     case CLEAR_PROFILE: {
@@ -40,10 +40,9 @@ export default function (state = initialState, action) {
         repos: [],
       };
     }
+
     default: {
-      return {
-        ...state,
-      };
+      return state;
     }
   }
 }
