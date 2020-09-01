@@ -5,11 +5,6 @@ import Moment from 'react-moment';
 import { deleteExperience } from '../../actions/profile';
 
 const Experience = ({ experience, deleteExperience }) => {
-  const onClick = (exp) => {
-    //e.preventDefault();
-    deleteExperience(exp);
-  };
-
   const experiences = experience.map((exp) => (
     <tr key={exp._id}>
       <td>{exp.company}</td>
@@ -23,7 +18,10 @@ const Experience = ({ experience, deleteExperience }) => {
         )}
       </td>
       <td>
-        <button className='btn btn-danger' onClick={() => onClick(exp._id)}>
+        <button
+          className='btn btn-danger'
+          onClick={() => deleteExperience(exp._id)}
+        >
           Delete
         </button>
       </td>
