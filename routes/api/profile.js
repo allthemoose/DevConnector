@@ -4,7 +4,8 @@ const request = require('request');
 const config = require('config');
 const auth = require('../../middleware/auth');
 const Profile = require('../../models/Profile');
-const user = require('../../models/User');
+const User = require('../../models/User');
+const Post = require('../../models/Post');
 const { check, validationResult } = require('express-validator');
 
 //@route    GET api/profile/me
@@ -150,6 +151,7 @@ router.get('/user/:user_id', async (req, res) => {
 router.delete('/', auth, async (req, res) => {
   try {
     //@todo remove users posts also
+    await Post.deleteMany({ user: req.user.id });
     //remove profile
     await Profile.findOneAndRemove({ user: req.user.id });
     //Remove User
@@ -330,7 +332,7 @@ router.get('/github/:username', (req, res) => {
       method: 'GET',
       headers: { 'User-Agent': 'allthemoose' },
     };
-    console.log(options.uri);
+    //console.log(options.uri);
     request(options, (error, response, body) => {
       if (error) console.error(error);
       if (response.statusCode == 200) {
@@ -339,7 +341,7 @@ router.get('/github/:username', (req, res) => {
       return res.status(404).json({ msg: 'no Github profile found' });
     });
   } catch (error) {
-    console.log(error.message);
+    // console.log(error.message);
     res.status(500).json({ msg: 'Server Error' });
   }
 });
