@@ -1,9 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import './App.css';
 import Navbar from './Components/layout/Navbar';
@@ -16,6 +12,7 @@ import CreateProfile from './Components/profile-form/CreateProfile';
 import AddExperience from './Components/profile-form/AddExperience';
 import AddEducation from './Components/profile-form/AddEducation';
 import EditProfile from './Components/profile-form/EditProfile';
+import Profiles from './Components/profiles/Profiles';
 import { loadUser } from './actions/auth';
 import PrivateRoute from './Components/routing/PrivateRoute';
 //Redux
@@ -40,16 +37,9 @@ const App = () => {
           <section className='container'>
             <Alert></Alert>
             <Switch>
-              <Route
-                exact
-                path='/Register'
-                component={Register}
-              />
-              <Route
-                exact
-                path='/Login'
-                component={Login}
-              />
+              <Route exact path='/Register' component={Register} />
+              <Route exact path='/Login' component={Login} />
+              <Route exact path='/Profiles' component={Profiles} />
               <PrivateRoute
                 Route
                 exact
