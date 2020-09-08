@@ -1,0 +1,44 @@
+import React, { useEffect, Fragment } from 'react';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import Spinner from '../layout/Spinner';
+import { getProfileById } from '../../actions/profile';
+
+const Profile = ({
+  getProfileById,
+  profile: { profile, loading },
+  auth,
+  match,
+}) => {
+  useEffect(() => getProfileById(match.params.id), [getProfileById]);
+
+  return (
+    <Fragment>
+      {profile === null || loading ? (
+        <Spinner />
+      ) : (
+        <Fragment>
+          <section className='container'>
+            <Link to='/profiles' className='btn btn-light'>
+              Back To Profiles
+            </Link>
+            <div className='profile-grid my-1'></div>
+          </section>
+        </Fragment>
+      )}
+    </Fragment>
+  );
+};
+
+Profile.propTypes = {
+  profile: PropTypes.object.isRequired,
+  getProfileById: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  profile: state.profile,
+});
+
+export default connect(mapStateToProps, { getProfileById })(Profile);
