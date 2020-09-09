@@ -144,7 +144,7 @@ router.get('/user/:user_id', async (req, res) => {
   }
 });
 
-//@route    DELETE api/profile/user/:user_id
+//@route    DELETE api/profile
 //@desc     remove a profiles User and Post
 //@access   private
 
@@ -159,9 +159,6 @@ router.delete('/', auth, async (req, res) => {
     res.json({ msg: 'User Removed' });
   } catch (err) {
     console.error(err.message);
-    if (err.kind == 'ObjectId') {
-      return res.status(400).json({ msg: 'Profile Not Found' });
-    }
     res.status(500).send({ msg: 'Server Error' });
   }
 });
