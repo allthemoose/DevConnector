@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
 import { getProfileById } from '../../actions/profile';
+import ProfileTop from './ProfileTop';
 
 const Profile = ({
   getProfileById,
@@ -33,6 +34,7 @@ const Profile = ({
                 </Link>
               )}
             <div className='profile-grid my-1'></div>
+            <ProfileTop profile={profile} />
           </section>
         </Fragment>
       )}

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const ProfileTop = (props) => {
+const ProfileTop = ({ profile: { company, location } }) => {
   return (
     <div className='profile-top bg-primary p-2'>
       <img
@@ -38,8 +38,8 @@ const ProfileTop = (props) => {
 
 ProfileTop.propTypes = {};
 
-const mapStateToProps = (state) => {
-  profile: state.profile;
-};
+const mapStateToProps = (state) => ({
+  profile: state.profile,
+});
 
 export default ProfileTop;

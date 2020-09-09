@@ -50,7 +50,7 @@ router.post(
       user,
       company,
       website,
-      locations,
+      location,
       status,
       skills,
       bio,
@@ -68,7 +68,7 @@ router.post(
     profileFeilds.user = req.user.id;
     if (company) profileFeilds.company = company;
     if (website) profileFeilds.website = website;
-    if (locations) profileFeilds.locations = locations;
+    if (location) profileFeilds.location = location;
     if (status) profileFeilds.status = status;
     if (skills) {
       profileFeilds.skills = skills.split(',').map((skill) => skill.trim());
