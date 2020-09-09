@@ -55,7 +55,7 @@ export const getProfiles = () => async (dispatch) => {
 export const getProfileById = (userId) => async (dispatch) => {
   dispatch({ type: CLEAR_PROFILE });
   try {
-    const res = await axios.get(`/api/profile/${userId}`);
+    const res = await axios.get(`/api/profile/user/${userId}`);
     dispatch({
       type: GET_PROFILE,
       payload: res.data,
@@ -74,7 +74,7 @@ export const getProfileById = (userId) => async (dispatch) => {
 // Get GitHub Repos.
 export const getGithubRepos = (username) => async (dispatch) => {
   try {
-    const res = await axios.get(`/api/profile/gthub/${username}`);
+    const res = await axios.get(`/api/profile/github/${username}`);
     dispatch({
       type: GET_REPOS,
       payload: res.data,
