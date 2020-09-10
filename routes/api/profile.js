@@ -64,25 +64,28 @@ router.post(
     } = req.body;
 
     // Check for entry before DB add.
-    const profileFeilds = {};
-    profileFeilds.user = req.user.id;
-    if (company) profileFeilds.company = company;
-    if (website) profileFeilds.website = website;
-    if (location) profileFeilds.location = location;
-    if (status) profileFeilds.status = status;
-    if (skills) {
-      profileFeilds.skills = skills.split(',').map((skill) => skill.trim());
-    }
-    if (bio) profileFeilds.bio = bio;
-    if (githubusername) profileFeilds.githubusername = githubusername;
-    if (experience) profileFeilds.experience = experience;
+    const profileFields = {
+      user: req.user.id,
+      company,
+      location,
+      website:
+        website && website !== ''
+          ? normalize(website, { forceHttps: true })
+          : '',
+      bio,
+      skills: Array.isArray(skills)
+        ? skills
+        : skills.split(',').map((skill) => ' ' + skill.trim()),
+      status,
+      githubusername,
+    };
 
-    profileFeilds.social = {};
-    if (youtube) profileFeilds.social.youtube = youtube;
-    if (twitter) profileFeilds.social.twitter = twitter;
-    if (facebook) profileFeilds.social.facebook = facebook;
-    if (instagram) profileFeilds.social.instagram = instagram;
-    if (linkedin) profileFeilds.social.linkedin = linkedin;
+    profileFields.social = {};
+    if (youtube) profileFields.social.youtube = youtube;
+    if (twitter) profileFields.social.twitter = twitter;
+    if (facebook) profileFields.social.facebook = facebook;
+    if (instagram) profileFields.social.instagram = instagram;
+    if (linkedin) profileFields.social.linkedin = linkedin;
 
     try {
       let profile = await Profile.findOne({
@@ -92,13 +95,13 @@ router.post(
       if (profile) {
         profile = await Profile.findOneAndUpdate(
           { user: req.user.id },
-          { $set: profileFeilds },
+          { $set: profileFields },
           { new: true }
         );
         return res.json(profile);
       }
       // create new
-      profile = new Profile(profileFeilds);
+      profile = new Profile(profileFields);
       await profile.save();
       return res.send(profile);
     } catch (err) {
