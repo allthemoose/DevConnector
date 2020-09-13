@@ -48,7 +48,7 @@ export const getProfiles = () => async (dispatch) => {
     dispatch({
       type: PROFILE_ERROR,
       payload: {
-        msg: error.response.msg,
+        msg: error.response.statusText,
         status: error.response.status,
       },
     });
@@ -85,11 +85,11 @@ export const getGithubRepos = (username) => async (dispatch) => {
       payload: res.data,
     });
   } catch (error) {
-    console.log('github error');
+    //console.log('github error');
     dispatch({
       type: NO_REPOS,
       payload: {
-        msg: error.response.msg,
+        msg: error.response.statusText,
         status: error.response.status,
       },
     });
@@ -125,7 +125,7 @@ export const createProfile = (formData, history, edit = false) => async (
     dispatch({
       type: PROFILE_ERROR,
       payload: {
-        msg: error.response.msg,
+        msg: error.response.statusText,
         status: error.response.status,
       },
     });
@@ -156,7 +156,7 @@ export const addExperience = (formData, history) => async (dispatch) => {
     dispatch({
       type: PROFILE_ERROR,
       payload: {
-        msg: error.response.msg,
+        msg: error.response.statusText,
         status: error.response.status,
       },
     });
@@ -176,7 +176,7 @@ export const deleteExperience = (id) => async (dispatch) => {
     dispatch({
       type: PROFILE_ERROR,
       payload: {
-        msg: error.response.msg,
+        msg: error.response.statusText,
         status: error.response.status,
       },
     });
