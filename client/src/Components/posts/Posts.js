@@ -4,7 +4,9 @@ import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
 import { getPosts } from '../../actions/post';
 
-const Posts = ({ posts, getPosts }) => {
+const Posts = ({ getPosts, post: { posts, loading } }) => {
+  useEffect(() => getPosts(), [getPosts]);
+
   return <div>Posts</div>;
 };
 
@@ -14,7 +16,7 @@ Posts.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  posts: state.posts,
+  post: state.post,
 });
 
 export default connect(mapStateToProps, { getPosts })(Posts);
