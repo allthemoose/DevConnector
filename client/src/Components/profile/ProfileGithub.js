@@ -8,6 +8,7 @@ const ProfileGithub = ({ username, getGithubRepos, repos }) => {
     getGithubRepos(username);
   }, [getGithubRepos, username]);
   return (
+    repos &&
     repos.length > 0 && (
       <div className='profile-github'>
         <h2 className='text-primary my-1'>

@@ -9,6 +9,7 @@ import {
   ACCOUNT_DELETED,
   GET_PROFILES,
   GET_REPOS,
+  NO_REPOS,
 } from './types';
 
 //Get the Current Profile
@@ -84,10 +85,11 @@ export const getGithubRepos = (username) => async (dispatch) => {
       payload: res.data,
     });
   } catch (error) {
+    console.log('github error');
     dispatch({
-      type: PROFILE_ERROR,
+      type: NO_REPOS,
       payload: {
-        msg: error.response.statusText,
+        msg: error.response.msg,
         status: error.response.status,
       },
     });

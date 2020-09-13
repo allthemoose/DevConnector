@@ -5,6 +5,7 @@ import {
   UPDATE_PROFILE,
   GET_PROFILES,
   GET_REPOS,
+  NO_REPOS,
 } from '../actions/types';
 
 const initialState = {
@@ -30,6 +31,7 @@ export default function (state = initialState, action) {
     case PROFILE_ERROR: {
       return {
         ...state,
+        profile: null,
         loading: false,
         error: payload,
       };
@@ -55,9 +57,17 @@ export default function (state = initialState, action) {
         loading: false,
       };
     }
+    case NO_REPOS: {
+      return {
+        ...state,
+        repos: [],
+        loading: false,
+      };
+    }
 
     default: {
-      return state;
+      console.log('Hit Default');
+      return { ...state };
     }
   }
 }
