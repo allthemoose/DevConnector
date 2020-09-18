@@ -67,7 +67,7 @@ export default function (state = initialState, action) {
 
     default: {
       //console.log('Hit Default');
-      return { ...state };
+      return state;
     }
   }
 }
