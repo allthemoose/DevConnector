@@ -126,7 +126,7 @@ router.put('/like/:id', [auth, checkObjectId('id')], async (req, res) => {
 
 router.put('/unlike/:id', [auth, checkObjectId('id')], async (req, res) => {
   try {
-    const post = await Post.findById(req.params.post_id);
+    const post = await Post.findById(req.params.id);
 
     if (!post.likes.some((like) => like.user.toString() === req.user.id)) {
       return res.status(400).send('Not yet Liked');
