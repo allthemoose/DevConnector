@@ -23,6 +23,14 @@ export default function (state = initialState, action) {
         posts: payload,
         loading: false,
       };
+
+    case CREATE_POST:
+      return {
+        ...state,
+        posts: [payload, ...state.posts],
+        loading: false,
+      };
+
     case UPDATE_LIKES:
       return {
         ...state,
@@ -33,12 +41,14 @@ export default function (state = initialState, action) {
         ),
         loading: false,
       };
+
     case POST_ERROR:
       return {
         ...state,
         loading: false,
         error: payload,
       };
+
     case DELETE_POST:
       return {
         ...state,
@@ -46,6 +56,6 @@ export default function (state = initialState, action) {
         loading: false,
       };
     default:
-      return { ...state };
+      return state;
   }
 }

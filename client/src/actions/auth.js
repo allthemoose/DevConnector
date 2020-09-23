@@ -33,14 +33,10 @@ export const loadUser = () => async (dispatch) => {
 };
 
 // Register User
-export const register = ({
-  name,
-  email,
-  password,
-}) => async (dispatch) => {
+export const register = ({ name, email, password }) => async (dispatch) => {
   const config = {
     headers: {
-      'Content-type': 'application/json',
+      'Content-Type': 'application/json',
     },
   };
 
@@ -56,9 +52,7 @@ export const register = ({
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
-      errors.forEach((error) =>
-        dispatch(setAlert(error.msg, 'danger'))
-      );
+      errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
     }
     dispatch({
       type: REGISTER_FAIL,
@@ -68,9 +62,7 @@ export const register = ({
 
 //Login and loadUser
 
-export const login = ({ email, password }) => async (
-  dispatch
-) => {
+export const login = ({ email, password }) => async (dispatch) => {
   const config = {
     headers: { 'Content-type': 'application/json' },
   };
@@ -86,9 +78,7 @@ export const login = ({ email, password }) => async (
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
-      errors.forEach((error) =>
-        dispatch(setAlert(error.msg, 'danger'))
-      );
+      errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
     }
     dispatch({
       type: LOGIN_FAIL,
