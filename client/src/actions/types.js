@@ -22,6 +22,7 @@ export const UPDATE_PROFILE = 'UPDATE_PROFILE';
 export const ACCOUNT_DELETED = 'ACCOUNT_DELETED';
 
 export const GET_POSTS = 'GET_POSTS';
+export const GET_POST = 'GET_POST';
 export const POST_ERROR = 'POST_ERROR';
 export const CREATE_POST = 'CREATE_POST';
 export const DELETE_POST = 'DELETE_POST';

@@ -4,6 +4,7 @@ import {
   POST_ERROR,
   UPDATE_LIKES,
   DELETE_POST,
+  GET_POST,
 } from '../actions/types';
 
 const initialState = {
@@ -23,14 +24,18 @@ export default function (state = initialState, action) {
         posts: payload,
         loading: false,
       };
-
+    case GET_POST:
+      return {
+        ...state,
+        post: payload,
+        loading: false,
+      };
     case CREATE_POST:
       return {
         ...state,
         posts: [payload, ...state.posts],
         loading: false,
       };
-
     case UPDATE_LIKES:
       return {
         ...state,

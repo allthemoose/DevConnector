@@ -15,6 +15,7 @@ import EditProfile from './Components/profile-form/EditProfile';
 import Profiles from './Components/profiles/Profiles';
 import Profile from './Components/profile/Profile';
 import Posts from './Components/posts/Posts';
+import Post from './Components/post/Post';
 import { loadUser } from './actions/auth';
 import PrivateRoute from './Components/routing/PrivateRoute';
 //Redux
@@ -74,6 +75,7 @@ const App = () => {
                 component={EditProfile}
               />
               <PrivateRoute Route exact path='/posts' component={Posts} />
+              <PrivateRoute Route exact path='/posts/:id' component={Post} />
             </Switch>
           </section>
         </Fragment>
