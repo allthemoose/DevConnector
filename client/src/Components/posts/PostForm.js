@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { createPost } from '../../actions/post';
 import PropTypes from 'prop-types';
 
-const PostForm = ({ createPost, history }) => {
+const PostForm = ({ createPost }) => {
   const [text, setText] = useState('');
 
   const onSubmit = (e) => {

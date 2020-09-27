@@ -28,3 +28,6 @@ export const CREATE_POST = 'CREATE_POST';
 export const DELETE_POST = 'DELETE_POST';
 
 export const UPDATE_LIKES = 'UPDATE_LIKES';
+
+export const ADD_COMMENT = 'ADD_COMMENTS';
+export const DELETE_COMMENT = 'DELETE_COMMENTS';
