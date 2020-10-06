@@ -1,11 +1,15 @@
 const express = require('express');
 const router = express.Router();
+
+const Profile = require('../../models/Profile');
+const User = require('../../models/User');
+const Post = require('../../models/Post');
+
 const request = require('request');
 const config = require('config');
 const auth = require('../../middleware/auth');
-const Profile = require('../../models/Profile');
-const user = require('../../models/User');
 const { check, validationResult } = require('express-validator');
+const normalize = require('normalize-url');
 
 //@route    GET api/profile/me
 //@desc     return my profile
@@ -46,15 +50,13 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
     const {
-      user,
       company,
       website,
-      locations,
+      location,
       status,
       skills,
       bio,
       githubusername,
-      experience,
       youtube,
       facebook,
       twitter,
@@ -63,46 +65,42 @@ router.post(
     } = req.body;
 
     // Check for entry before DB add.
-    const profileFeilds = {};
-    profileFeilds.user = req.user.id;
-    if (company) profileFeilds.company = company;
-    if (website) profileFeilds.website = website;
-    if (locations) profileFeilds.locations = locations;
-    if (status) profileFeilds.status = status;
-    if (skills) {
-      profileFeilds.skills = skills.split(',').map((skill) => skill.trim());
-    }
-    if (bio) profileFeilds.bio = bio;
-    if (githubusername) profileFeilds.githubusername = githubusername;
-    if (experience) profileFeilds.experience = experience;
+    const profileFields = {
+      user: req.user.id,
+      company,
+      location,
+      website:
+        website && website !== ''
+          ? normalize(website, { forceHttps: true })
+          : '',
+      bio,
+      skills: Array.isArray(skills)
+        ? skills
+        : skills.split(',').map((skill) => ' ' + skill.trim()),
+      status,
+      githubusername,
+    };
 
-    profileFeilds.social = {};
-    if (youtube) profileFeilds.social.youtube = youtube;
-    if (twitter) profileFeilds.social.twitter = twitter;
-    if (facebook) profileFeilds.social.facebook = facebook;
-    if (instagram) profileFeilds.social.instagram = instagram;
-    if (linkedin) profileFeilds.social.linkedin = linkedin;
+    // Build social object and add to profileFields
+    const socialfields = { youtube, twitter, instagram, linkedin, facebook };
+
+    for (const [key, value] of Object.entries(socialfields)) {
+      if (value && value.length > 0)
+        socialfields[key] = normalize(value, { forceHttps: true });
+    }
+    profileFields.social = socialfields;
 
     try {
-      let profile = await Profile.findOne({
-        user: req.user.id,
-      });
-      //update existing
-      if (profile) {
-        profile = await Profile.findOneAndUpdate(
-          { user: req.user.id },
-          { $set: profileFeilds },
-          { new: true }
-        );
-        return res.json(profile);
-      }
-      // create new
-      profile = new Profile(profileFeilds);
-      await profile.save();
-      return res.send(profile);
+      // Using upsert option (creates new doc if no match is found):
+      let profile = await Profile.findOneAndUpdate(
+        { user: req.user.id },
+        { $set: profileFields },
+        { new: true, upsert: true, setDefaultsOnInsert: true }
+      );
+      res.json(profile);
     } catch (err) {
       console.error(err.message);
-      res.status(500).send({ msg: 'Server error' });
+      res.status(500).send('Server Error');
     }
   }
 );
@@ -143,13 +141,14 @@ router.get('/user/:user_id', async (req, res) => {
   }
 });
 
-//@route    DELETE api/profile/user/:user_id
+//@route    DELETE api/profile
 //@desc     remove a profiles User and Post
 //@access   private
 
 router.delete('/', auth, async (req, res) => {
   try {
     //@todo remove users posts also
+    await Post.deleteMany({ user: req.user.id });
     //remove profile
     await Profile.findOneAndRemove({ user: req.user.id });
     //Remove User
@@ -157,9 +156,6 @@ router.delete('/', auth, async (req, res) => {
     res.json({ msg: 'User Removed' });
   } catch (err) {
     console.error(err.message);
-    if (err.kind == 'ObjectId') {
-      return res.status(400).json({ msg: 'Profile Not Found' });
-    }
     res.status(500).send({ msg: 'Server Error' });
   }
 });
@@ -330,7 +326,7 @@ router.get('/github/:username', (req, res) => {
       method: 'GET',
       headers: { 'User-Agent': 'allthemoose' },
     };
-    console.log(options.uri);
+    //console.log(options.uri);
     request(options, (error, response, body) => {
       if (error) console.error(error);
       if (response.statusCode == 200) {
@@ -339,7 +335,7 @@ router.get('/github/:username', (req, res) => {
       return res.status(404).json({ msg: 'no Github profile found' });
     });
   } catch (error) {
-    console.log(error.message);
+    // console.log(error.message);
     res.status(500).json({ msg: 'Server Error' });
   }
 });
